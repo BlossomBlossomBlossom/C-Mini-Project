@@ -92,6 +92,9 @@ void add()
 
     fprintf(fpout, "\n%d,%s,%s,%s,%s", newid, newdesc,newqty,newexp,newprice);
 
+    fclose(fpin);
+    fclose(fpout);
+
 }
 void search()
 {
@@ -168,12 +171,11 @@ FILE *fpin;
 
     printf("ERROR! Product not on the list! \n");
 
-
+fclose(fpin);
 }
 void view()
 {
-FILE *fpin;
-    FILE *fpout;
+    FILE *fpin;
     product p[500];
     char row[100];
     char *token;
@@ -183,14 +185,8 @@ FILE *fpin;
     int i = 0;
     int j = 0;
     int x = 0;
-    int newid;
-    char newdesc[53];
-    char newqty[18];
-    char newexp[18];
-    char newprice[18];
 
     fpin    = fopen("Inventory.csv", "r");
-    fpout   = fopen("Inventory.csv", "a");
 
     //read input
     while(feof(fpin) == 0)
@@ -268,8 +264,11 @@ FILE *fpin;
         printf("[1] Main Menu\n");
         printf("[2] Exit Program\n");
         printf("\n");
+        getch();
 
     }
+
+    fclose(fpin);
 }
 void update()
 {
@@ -395,13 +394,16 @@ void update()
 		}
     }
 
+    fclose(fpin);
     fpout   = fopen("Inventory.csv", "w");
     for(x = 0; x < j ; x++)
     {
-        fprintf(fpout, "%d,%s,%s,%s,%s",p[x].id, p[x].desc, p[x].qty, p[x].exp, p[x].price );
+        fprintf(fpout, "%d,%s,%s,%s,%s\n",p[x].id, p[x].desc, p[x].qty, p[x].exp, p[x].price );
     }
 
     printf("Updated!");
+    getch();
+    fclose(fpout);
 
 
 
@@ -412,7 +414,7 @@ char choice;
 
     do
     {
-   // system("cls");
+    system("cls");
 	printf("MAIN MENU \n");
     printf("[A] Create Inventory Item \n");
     printf("[B] Update Inventory Item \n");
