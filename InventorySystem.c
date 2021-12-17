@@ -105,6 +105,7 @@ FILE *fpin;
     int i = 0;
     int j = 0;
     int x = 0;
+    int n;
     int newid;
     char newdesc[30];
     char newqty[10];
@@ -150,6 +151,22 @@ FILE *fpin;
         j++;
         i = 0;
     }
+    printf("SEARCH MENU\n");
+    printf("Enter the ID number of Product you want to search: \n");
+	scanf("%d", &n);
+
+    for(x = 0; x < j ; x++)
+    {
+        if(p[x].id == n)
+		{
+			printf("Product found! \n");
+			printf("Product ID: %d\nProduct Description: %s\nQuantity: %s\nExp.date: %s\nPrice: %s\n", p[x].id,p[x].desc,p[x].qty,p[x].exp,p[x].price);
+			break;
+		}
+    }
+
+    printf("ERROR! Product not on the list! \n");
+
 
 }
 void view()
