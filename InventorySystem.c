@@ -6,7 +6,7 @@
 
 typedef struct product{
 	int id;
-	char desc[53];
+	char desc[43];
 	char qty[18];
 	char exp[18];
 	char price[18];
@@ -16,7 +16,7 @@ void add()
 {
     FILE *fpin;
     FILE *fpout;
-    product p[500];
+    product p[511];
     char row[100];
     char *token;
     char *temp[5];
@@ -26,13 +26,14 @@ void add()
     int j = 0;
     int x = 0;
     int newid;
+    int flag = 0;
     char newdesc[53];
     char newqty[18];
     char newexp[18];
     char newprice[18];
 
-    fpin    = fopen("Inventory.csv", "r");
-    fpout   = fopen("Inventory.csv", "a");
+    fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
+    fpout   = fopen("Inventory_ST_NoBOM.csv", "a");
 
     //read input
     while(feof(fpin) == 0)
@@ -64,9 +65,27 @@ void add()
 
 
         strcpy(p[j].desc,   temp[1]);
+        strncpy(p[j].desc, p[j].desc+1, strlen(p[j].desc));
+        p[j].desc[strlen(p[j].desc)-1]    = '\0';
+
         strcpy(p[j].qty,    temp[2]);
+        strncpy(p[j].qty, p[j].qty+1, strlen(p[j].qty));
+        p[j].qty[strlen(p[j].qty)-1]    = '\0';
+
         strcpy(p[j].exp,    temp[3]);
+        strncpy(p[j].exp, p[j].exp+1, strlen(p[j].exp));
+        p[j].exp[strlen(p[j].exp)-1]    = '\0';
+
         strcpy(p[j].price,  temp[4]);
+        strncpy(p[j].price, p[j].price+1, strlen(p[j].price));
+        if(p[j].price[strlen(p[j].price) - 1] == '\n')
+        {
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+            p[j].price[strlen(p[j].price)-2]  = '\0';
+        }
+        else
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+
         j++;
         i = 0;
     }
@@ -76,21 +95,37 @@ void add()
     {
         printf("Product ID: ");
         scanf("%d", &newid);
-        printf("Product Description: ");
-        scanf("%s", &newdesc);
-        printf("Quantity: ");
-        scanf("%s", &newqty);
-        printf("Exp. Date: ");
-        scanf("%s", &newexp);
-        printf("Price(PHP): ");
-        scanf("%s", &newprice);
+        for(x = 0; x < j; x++)
+        {
+            if(newid == p[x].id)
+            {
+                printf("Product ID Exists");
+                getch();
+                flag = 1;
+            }
+        }
+        if(flag == 0)
+        {
+            printf("Product Description: ");
+            scanf("%s", &newdesc);
+            printf("Quantity: ");
+            scanf("%s", &newqty);
+            printf("Exp. Date(yyyy-mm-dd): ");
+            scanf("%s", &newexp);
+            printf("Price(PHP): ");
+            scanf("%s", &newprice);
+        }
     }
     else
     {
         printf("Max Inventory Limit Reached");
+        flag = 1;
+        getch();
+
     }
 
-    fprintf(fpout, "\n%d,%s,%s,%s,%s", newid, newdesc,newqty,newexp,newprice);
+    if(flag == 0)
+        fprintf(fpout, "\"%d\",\"%s\",\"%s\",\"%s\",\"%s\"\n", newid, newdesc,newqty,newexp,newprice);
 
     fclose(fpin);
     fclose(fpout);
@@ -98,9 +133,8 @@ void add()
 }
 void search()
 {
-FILE *fpin;
-    FILE *fpout;
-    product p[500];
+    FILE *fpin;
+    product p[511];
     char row[100];
     char *token;
     char *temp[5];
@@ -110,14 +144,9 @@ FILE *fpin;
     int j = 0;
     int x = 0;
     int n;
-    int newid;
-    char newdesc[53];
-    char newqty[18];
-    char newexp[18];
-    char newprice[18];
+    int flag = 0;
 
-    fpin    = fopen("Inventory.csv", "r");
-    fpout   = fopen("Inventory.csv", "a");
+    fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
 
     //read input
     while(feof(fpin) == 0)
@@ -147,11 +176,28 @@ FILE *fpin;
             p[j].id = atoi(temp[0]);
         }
 
+        strcpy(p[j].desc,   temp[1]);
+        strncpy(p[j].desc, p[j].desc+1, strlen(p[j].desc));
+        p[j].desc[strlen(p[j].desc)-1]    = '\0';
 
-        strcpy(p[j].desc,temp[1]);
-        strcpy(p[j].qty,temp[2]);
-        strcpy(p[j].exp,temp[3]);
-        strcpy(p[j].price,temp[4]);
+        strcpy(p[j].qty,    temp[2]);
+        strncpy(p[j].qty, p[j].qty+1, strlen(p[j].qty));
+        p[j].qty[strlen(p[j].qty)-1]    = '\0';
+
+        strcpy(p[j].exp,    temp[3]);
+        strncpy(p[j].exp, p[j].exp+1, strlen(p[j].exp));
+        p[j].exp[strlen(p[j].exp)-1]    = '\0';
+
+        strcpy(p[j].price,  temp[4]);
+        strncpy(p[j].price, p[j].price+1, strlen(p[j].price));
+        if(p[j].price[strlen(p[j].price) - 1] == '\n')
+        {
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+            p[j].price[strlen(p[j].price)-2]  = '\0';
+        }
+        else
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+
         j++;
         i = 0;
     }
@@ -165,18 +211,24 @@ FILE *fpin;
 		{
 			printf("Product found! \n");
 			printf("Product ID: %d\nProduct Description: %s\nQuantity: %s\nExp.date: %s\nPrice: %s\n", p[x].id,p[x].desc,p[x].qty,p[x].exp,p[x].price);
-			break;
+			getch();
+			flag = 1;
 		}
     }
 
-    printf("ERROR! Product not on the list! \n");
+    if(flag == 0)
+    {
+        printf("ERROR! Product not on the list! \n");
+        getch();
+    }
+
 
 fclose(fpin);
 }
 void view()
 {
     FILE *fpin;
-    product p[500];
+    product p[511];
     char row[100];
     char *token;
     char *temp[5];
@@ -186,7 +238,7 @@ void view()
     int j = 0;
     int x = 0;
 
-    fpin    = fopen("Inventory.csv", "r");
+    fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
 
     //read input
     while(feof(fpin) == 0)
@@ -218,9 +270,27 @@ void view()
 
 
         strcpy(p[j].desc,   temp[1]);
+        strncpy(p[j].desc, p[j].desc+1, strlen(p[j].desc));
+        p[j].desc[strlen(p[j].desc)-1]    = '\0';
+
         strcpy(p[j].qty,    temp[2]);
+        strncpy(p[j].qty, p[j].qty+1, strlen(p[j].qty));
+        p[j].qty[strlen(p[j].qty)-1]    = '\0';
+
         strcpy(p[j].exp,    temp[3]);
+        strncpy(p[j].exp, p[j].exp+1, strlen(p[j].exp));
+        p[j].exp[strlen(p[j].exp)-1]    = '\0';
+
         strcpy(p[j].price,  temp[4]);
+        strncpy(p[j].price, p[j].price+1, strlen(p[j].price));
+        if(p[j].price[strlen(p[j].price) - 1] == '\n')
+        {
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+            p[j].price[strlen(p[j].price)-2]  = '\0';
+        }
+        else
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+
         j++;
         i = 0;
     }
@@ -257,13 +327,12 @@ void view()
             printf("|%s",   p[x].exp);
             for(int y = 0; y< 18-strlen(p[x].exp);y++)
                 printf(" ");
-            printf("|%s",   p[x].price);
+            printf("|%s\n",   p[x].price);
         }
         printf("\n");
         printf("\n");
-        printf("[1] Main Menu\n");
-        printf("[2] Exit Program\n");
-        printf("\n");
+        printf("Press Any key to return to Main menu\n");
+
         getch();
 
     }
@@ -274,7 +343,7 @@ void update()
 {
     FILE *fpin;
     FILE *fpout;
-    product p[500];
+    product p[511];
     char row[100];
     char *token;
     char *temp[5];
@@ -291,7 +360,7 @@ void update()
     char newexp[18];
     char newprice[18];
 
-    fpin    = fopen("Inventory.csv", "r");
+    fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
 
     //read input
     while(feof(fpin) == 0)
@@ -322,9 +391,27 @@ void update()
         }
 
         strcpy(p[j].desc,   temp[1]);
+        strncpy(p[j].desc, p[j].desc+1, strlen(p[j].desc));
+        p[j].desc[strlen(p[j].desc)-1]    = '\0';
+
         strcpy(p[j].qty,    temp[2]);
+        strncpy(p[j].qty, p[j].qty+1, strlen(p[j].qty));
+        p[j].qty[strlen(p[j].qty)-1]    = '\0';
+
         strcpy(p[j].exp,    temp[3]);
+        strncpy(p[j].exp, p[j].exp+1, strlen(p[j].exp));
+        p[j].exp[strlen(p[j].exp)-1]    = '\0';
+
         strcpy(p[j].price,  temp[4]);
+        strncpy(p[j].price, p[j].price+1, strlen(p[j].price));
+        if(p[j].price[strlen(p[j].price) - 1] == '\n')
+        {
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+            p[j].price[strlen(p[j].price)-2]  = '\0';
+        }
+        else
+            p[j].price[strlen(p[j].price)-1]  = '\0';
+
         j++;
         i = 0;
     }
@@ -395,10 +482,10 @@ void update()
     }
 
     fclose(fpin);
-    fpout   = fopen("Inventory.csv", "w");
+    fpout   = fopen("Inventory_ST_NoBOM.csv", "w");
     for(x = 0; x < j ; x++)
     {
-        fprintf(fpout, "%d,%s,%s,%s,%s\n",p[x].id, p[x].desc, p[x].qty, p[x].exp, p[x].price );
+        fprintf(fpout, "\"%d\",\"%s\",\"%s\",\"%s\",\"%s\"\n",p[x].id, p[x].desc, p[x].qty, p[x].exp, p[x].price );
     }
 
     printf("Updated!");
