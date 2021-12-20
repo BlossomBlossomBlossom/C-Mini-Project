@@ -91,7 +91,7 @@ void add()
     }
 
     printf("ADD MENU\n");
-    if(j < 500)
+    if(j < 510)
     {
         printf("Product ID: ");
         scanf("%d", &newid);
@@ -396,7 +396,7 @@ int checkDate(char date[])
 					int dayChecker = checkDay(num3, num2, num1);
 					return dayChecker + monthChecker + yearChecker;
 				}
-				
+
 			} else if(month == 2)
 			{
 				char monthString[2] = {date[5], date[6]};
@@ -464,7 +464,7 @@ int checkDay(int day, int month, int year)
 	} else if(day > 28 && month == 2 && year %4 != 0)
 	{
 		return day;
-	} else	
+	} else
 	{
 		return 0;
 	}
@@ -720,7 +720,7 @@ void update()
 				printf("Enter New Product Description: ");
 				scanf("%s", &p[x].desc);
 			}
-			
+
 			printf("\nWould you like to update product quantity [Y/N]? ");
 			scanf(" %c", &ch);
 			while (ch != 'y' && ch != 'Y' && ch !='n' && ch != 'N'){
@@ -784,7 +784,7 @@ void update()
 	    {
 	        fprintf(fpout, "\"%d\",\"%s\",\"%s\",\"%s\",\"%s\"\n",p[x].id, p[x].desc, p[x].qty, p[x].exp, p[x].price );
 	    }
-	
+
 	    printf("Updated!");
 	    getch();
 	    fclose(fpout);
