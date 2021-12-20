@@ -718,7 +718,7 @@ void update()
 			if(ch == 'y' || ch == 'Y'){
 
 				printf("Enter New Product Description: ");
-				scanf("%[^\n]s", &p[x].desc);
+				scanf("%s", &p[x].desc);
 			}
 			
 			printf("\nWould you like to update product quantity [Y/N]? ");
