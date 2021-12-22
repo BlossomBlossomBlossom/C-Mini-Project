@@ -357,7 +357,7 @@ int checkDate(char date[])
         else if (ispunct(date[i]) != 0 && date[i] == '-')
             hyphen++;
     }
-    if((digit == 8 || digit == 7 || digit == 6) && hyphen == 2){
+    if(digit == 8 && hyphen == 2){
     	for(j = 0; j < 4; j++)
 		{
 			if (isdigit(date[j]) != 0)
@@ -366,38 +366,14 @@ int checkDate(char date[])
 		for(k=5; k <= 6; k++)
 		{
 			if (isdigit(date[k]) != 0)
-			month++;
+				month++;
 		}
 		if(year == 4)
 		{
 			char yearString[4] = {date[0], date[1], date[2], date[3]};
 			int num1 = atoi(yearString);
 			int yearChecker = checkYear(num1);
-			if(month == 1)
-			{
-				char monthString[1] = {date[5]};
-				int num2 = atoi(monthString);
-				int monthChecker = checkMonth(num2);
-				for(l=7; date[l] != '\0'; l++)
-				{
-					if (isdigit(date[l]) != 0)
-	            	day++;
-				}
-				if(day == 1)
-				{
-					char dayString[1] = {date[7]};
-					int num3 = atoi(dayString);
-					int dayChecker = checkDay(num3, num2, num1);
-					return dayChecker + monthChecker + yearChecker;
-				} else
-				{
-					char dayString[2] = {date[7], date[8]};
-					int num3 = atoi(dayString);
-					int dayChecker = checkDay(num3, num2, num1);
-					return dayChecker + monthChecker + yearChecker;
-				}
-
-			} else if(month == 2)
+			if(month == 2)
 			{
 				char monthString[2] = {date[5], date[6]};
 				int num2 = atoi(monthString);
@@ -407,26 +383,29 @@ int checkDate(char date[])
 					if (isdigit(date[l]) != 0)
 	            	day++;
 				}
-				if(day == 1)
-				{
-					char dayString[1] = {date[8]};
-					int num3 = atoi(dayString);
-					int dayChecker = checkDay(num3, num2, num1);
-					return dayChecker + monthChecker + yearChecker;
-				} else
+				if(day == 2)
 				{
 					char dayString[2] = {date[8], date[9]};
 					int num3 = atoi(dayString);
 					int dayChecker = checkDay(num3, num2, num1);
 					return dayChecker + monthChecker + yearChecker;
+				} else
+				{
+					return 1;
 				}
-			} else {
+			} else 
+			{
 				return 1;
 			}
-		} else {
+		} else 
+		{
 			return 1;
 		}
-	}  else {
+	} else if(digit == 0 && hyphen == 1)
+	{
+		return 0;	
+	}  else 
+	{
 		return 1;
 	}
 }
@@ -490,31 +469,6 @@ int check(char input[])
     	return total;
 	} else if(period > 1){
 		return period;
-	} else {
-		return 0;
-	}
-}
-int checkIdInput(char input[])
-{
-	int alpha = 0;
-	int punct = 0;
-	int digit = 0;
-	int i=0;
-	int total;
-	for (i = 0; input[i] != '\0'; i++)
-    {
-        if (isalpha(input[i]) != 0)
-            alpha++;
-        else if (ispunct(input[i]) != 0)
-            punct++;
-        else if (isdigit(input[i]) != 0)
-        	digit++;
-    }
-    total = alpha + punct;
-    if(total > 0){
-    	return total;
-	} else if(digit != 5){
-		return digit;
 	} else {
 		return 0;
 	}
@@ -608,6 +562,7 @@ void update()
     char *temp[5];
     char temp2[7];
     char temp3[5];
+    char buffer;
     char ch;
     int i = 0;
     int j = 0;
@@ -619,9 +574,13 @@ void update()
     char newqty[18];
     char newexp[18];
     char newprice[18];
-    char tempId[20];
 
-    fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
+    fpin = fopen("Inventory_ST_NoBOM.csv", "r");
+    if(fpin == NULL){
+		printf("File not found!");
+		getch();
+		main();
+	}
 
     //read input
     while(feof(fpin) == 0)
@@ -696,12 +655,10 @@ void update()
 
 				printf("Enter New ID: ");
 				scanf("%d", &p[x].id);
-				sprintf(tempId, "%d", p[x].id);
-				while(checkIdInput(tempId) !=0)
+				while(p[x].id < 10000 || p[x].id > 99999)
 				{
 					printf("Invalid. Must be 5 digit integer. ");
 					scanf("%d", &p[x].id);
-					sprintf(tempId, "%d", p[x].id);
 				}
 				while(checkId(p[x].id) != 0)
 				{
@@ -718,7 +675,8 @@ void update()
 			if(ch == 'y' || ch == 'Y'){
 
 				printf("Enter New Product Description: ");
-				scanf("%s", &p[x].desc);
+				scanf("%c",&buffer);
+				scanf("%[^\n]",p[x].desc);
 			}
 
 			printf("\nWould you like to update product quantity [Y/N]? ");
@@ -774,7 +732,7 @@ void update()
     fclose(fpin);
     if(!found)
 	{
-		printf("Product not on the list!\n");
+		printf("\nProduct not on the list!\n");
 		getch();
 		main();
 	} else
