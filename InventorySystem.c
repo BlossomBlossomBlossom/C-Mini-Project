@@ -22,6 +22,7 @@ void add()
     char *temp[5];
     char temp2[7];
     char temp3[5];
+    char buffer;
     int i = 0;
     int j = 0;
     int x = 0;
@@ -35,6 +36,8 @@ void add()
     fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
     fpout   = fopen("Inventory_ST_NoBOM.csv", "a");
 
+    if(fpin != NULL)
+    {
     //read input
     while(feof(fpin) == 0)
     {
@@ -81,7 +84,7 @@ void add()
         if(p[j].price[strlen(p[j].price) - 1] == '\n')
         {
             p[j].price[strlen(p[j].price)-1]  = '\0';
-            p[j].price[strlen(p[j].price)-2]  = '\0';
+            p[j].price[strlen(p[j].price)-1]  = '\0';
         }
         else
             p[j].price[strlen(p[j].price)-1]  = '\0';
@@ -107,13 +110,24 @@ void add()
         if(flag == 0)
         {
             printf("Product Description: ");
-            scanf("%s", &newdesc);
+            scanf("%c", &buffer);
+            scanf("%[^\n]", &newdesc);
+
             printf("Quantity: ");
-            scanf("%s", &newqty);
+            scanf("%c", &buffer);
+            scanf("%[^\n]", &newqty);
+
             printf("Exp. Date(yyyy-mm-dd): ");
-            scanf("%s", &newexp);
+            scanf("%c", &buffer);
+            scanf("%[^\n]", &newexp);
+
             printf("Price(PHP): ");
-            scanf("%s", &newprice);
+            scanf("%c", &buffer);
+            scanf("%[^\n]", &newprice);
+            printf("\n\nProduct Successfully Added");
+            scanf("%c", &buffer);
+            scanf("%c", &buffer);
+
         }
     }
     else
@@ -129,6 +143,13 @@ void add()
 
     fclose(fpin);
     fclose(fpout);
+    }
+    else
+    {
+        printf("ADD MENU\n");
+        printf("File does not exist");
+        getch();
+    }
 
 }
 void search()
@@ -140,14 +161,18 @@ void search()
     char *temp[5];
     char temp2[7];
     char temp3[5];
+    char buffer;
     int i = 0;
     int j = 0;
     int x = 0;
     int n;
     int flag = 0;
 
+
     fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
 
+    if(fpin != NULL)
+    {
     //read input
     while(feof(fpin) == 0)
     {
@@ -193,7 +218,7 @@ void search()
         if(p[j].price[strlen(p[j].price) - 1] == '\n')
         {
             p[j].price[strlen(p[j].price)-1]  = '\0';
-            p[j].price[strlen(p[j].price)-2]  = '\0';
+            p[j].price[strlen(p[j].price)-1]  = '\0';
         }
         else
             p[j].price[strlen(p[j].price)-1]  = '\0';
@@ -205,13 +230,15 @@ void search()
     printf("Enter the ID number of Product you want to search: \n");
 	scanf("%d", &n);
 
-    for(x = 0; x < j ; x++)
+    for(x = 0; x < j-1; x++)
     {
         if(p[x].id == n)
 		{
 			printf("Product found! \n");
 			printf("Product ID: %d\nProduct Description: %s\nQuantity: %s\nExp.date: %s\nPrice: %s\n", p[x].id,p[x].desc,p[x].qty,p[x].exp,p[x].price);
-			getch();
+			scanf("%c",&buffer);
+			scanf("%c",&buffer);
+			x = j + 1;
 			flag = 1;
 		}
     }
@@ -223,7 +250,14 @@ void search()
     }
 
 
-fclose(fpin);
+    fclose(fpin);
+    }
+    else
+    {
+        printf("SEARCH MENU\n");
+        printf("File does not exist");
+        getch();
+    }
 }
 void view()
 {
@@ -240,6 +274,8 @@ void view()
 
     fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
 
+    if(fpin != NULL)
+    {
     //read input
     while(feof(fpin) == 0)
     {
@@ -286,7 +322,7 @@ void view()
         if(p[j].price[strlen(p[j].price) - 1] == '\n')
         {
             p[j].price[strlen(p[j].price)-1]  = '\0';
-            p[j].price[strlen(p[j].price)-2]  = '\0';
+            p[j].price[strlen(p[j].price)-1]  = '\0';
         }
         else
             p[j].price[strlen(p[j].price)-1]  = '\0';
@@ -303,6 +339,7 @@ void view()
         printf("\t\t\t  --Please add products first--");
         printf("\n");
         printf("\n");
+
     }
     else
     {
@@ -314,7 +351,7 @@ void view()
         printf("|#|Prod_ID|                Prod_Name               |Quantity          |Exp_Date          |Price\n");
         printf("--------------------------------------------------------------\n");
         i=1;
-        for(x = 0; x < j; x++)
+        for(x = 0; x < j-1; x++)
         {
             printf("|%d", i++);
             printf("|%d  ", p[x].id);
@@ -338,6 +375,14 @@ void view()
     }
 
     fclose(fpin);
+
+    }
+    else
+    {
+        printf("VIEW MENU\n");
+        printf("File does not exist");
+        getch();
+    }
 }
 int checkDate(char date[])
 {
@@ -393,18 +438,18 @@ int checkDate(char date[])
 				{
 					return 1;
 				}
-			} else 
+			} else
 			{
 				return 1;
 			}
-		} else 
+		} else
 		{
 			return 1;
 		}
 	} else if(digit == 0 && hyphen == 1)
 	{
-		return 0;	
-	}  else 
+		return 0;
+	}  else
 	{
 		return 1;
 	}
@@ -577,6 +622,7 @@ void update()
 
     fpin = fopen("Inventory_ST_NoBOM.csv", "r");
     if(fpin == NULL){
+        printf("SEARCH MENU\n");
 		printf("File not found!");
 		getch();
 		main();
@@ -627,7 +673,7 @@ void update()
         if(p[j].price[strlen(p[j].price) - 1] == '\n')
         {
             p[j].price[strlen(p[j].price)-1]  = '\0';
-            p[j].price[strlen(p[j].price)-2]  = '\0';
+            p[j].price[strlen(p[j].price)-1]  = '\0';
         }
         else
             p[j].price[strlen(p[j].price)-1]  = '\0';
@@ -639,12 +685,14 @@ void update()
     printf("Enter ID no. to Update : ");
 	scanf("%d", &id);
 
-	for(x = 0; x < j ; x++)
+	for(x = 0; x < j-1 ; x++)
     {
         if(p[x].id == id)
 		{
 
 			found=1;
+
+			//update ID
 			printf("\nWould you like to update product ID [Y/N]? ");
 			scanf(" %c", &ch);
 			while (ch != 'y' && ch != 'Y' && ch !='n' && ch != 'N'){
@@ -666,6 +714,8 @@ void update()
 					scanf("%d", &p[x].id);
 				}
 			}
+
+			//update description
 			printf("\nWould you like to update product Description [Y/N]? ");
 			scanf(" %c", &ch);
 			while (ch != 'y' && ch != 'Y' && ch !='n' && ch != 'N'){
@@ -679,6 +729,7 @@ void update()
 				scanf("%[^\n]",p[x].desc);
 			}
 
+            //update quantity
 			printf("\nWould you like to update product quantity [Y/N]? ");
 			scanf(" %c", &ch);
 			while (ch != 'y' && ch != 'Y' && ch !='n' && ch != 'N'){
@@ -687,13 +738,17 @@ void update()
 			}
 			if(ch == 'y' || ch == 'Y'){
 				printf("Enter New Quantity: ");
-				scanf("%s,", &p[x].qty);
+				scanf("%c",&buffer);
+				scanf("%[^\n]s,", &p[x].qty);
 				while(check(p[x].qty) != 0)
 				{
 					printf("Invalid input. Must be greater than or equal to 0. ");
+					scanf("%c",&buffer);
 					scanf("%s,", &p[x].qty);
 				}
 			}
+
+			//update expiration date
 			printf("\nWould you like to update product expiration date [Y/N]?");
 			scanf(" %c", &ch);
 			while (ch != 'y' && ch != 'Y' && ch !='n' && ch != 'N'){
@@ -702,14 +757,17 @@ void update()
 			}
 			if(ch == 'y' || ch == 'Y'){
 				printf("Enter New Expiration Date (yyyy-mm-dd). \n");
+				scanf("%c",&buffer);
 				scanf("%s", &p[x].exp);
 				while(checkDate(p[x].exp) != 0)
 				{
 					printf("Invalid input. Please try again (yyyy-mm-dd). ");
+					scanf("%c",&buffer);
 					scanf("%s", &p[x].exp);
 				}
 			}
 
+            //update product price
 			printf("\nWould you like to update product price [Y/N]?");
 			scanf(" %c", &ch);
 			while (ch != 'y' && ch != 'Y' && ch !='n' && ch != 'N'){
@@ -719,10 +777,12 @@ void update()
 			if(ch == 'y' || ch == 'Y'){
 
 				printf("Enter New Price (Php): ");
+				scanf("%c",&buffer);
 				scanf("%s", &p[x].price);
 				while(check(p[x].price) != 0 || strcmp(&p[x].price, "0") == 0)
 				{
 					printf("Invalid input. Must be greater than 0. ");
+					scanf("%c",&buffer);
 					scanf("%s,\n", &p[x].price);
 				}
 			}
@@ -738,7 +798,7 @@ void update()
 	} else
 	{
 		fpout   = fopen("Inventory_ST_NoBOM.csv", "w");
-	    for(x = 0; x < j ; x++)
+	    for(x = 0; x < j-1 ; x++)
 	    {
 	        fprintf(fpout, "\"%d\",\"%s\",\"%s\",\"%s\",\"%s\"\n",p[x].id, p[x].desc, p[x].qty, p[x].exp, p[x].price );
 	    }
