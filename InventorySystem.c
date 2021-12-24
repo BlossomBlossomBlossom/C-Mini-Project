@@ -34,7 +34,6 @@ void add()
     char newprice[18];
 
     fpin    = fopen("Inventory_ST_NoBOM.csv", "r");
-    fpout   = fopen("Inventory_ST_NoBOM.csv", "a");
 
     if(fpin != NULL)
     {
@@ -139,10 +138,13 @@ void add()
     }
 
     if(flag == 0)
+    {
+        fpout   = fopen("Inventory_ST_NoBOM.csv", "a");
         fprintf(fpout, "\"%d\",\"%s\",\"%s\",\"%s\",\"%s\"\n", newid, newdesc,newqty,newexp,newprice);
+        fclose(fpout);
+    }
 
     fclose(fpin);
-    fclose(fpout);
     }
     else
     {
